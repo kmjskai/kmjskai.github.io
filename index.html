@@ -3,9 +3,233 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#fbf8f2">
+    <meta name="description" content="凯门见山Kai的个人主页">
     <title>凯门见山Kai</title>
+    <link rel="icon" href="avatar.jpg">
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #201f1c;
+        --muted: #777169;
+        --paper: #fbf8f2;
+        --orange: #ed681d;
+        --apricot: #f4b25f;
+        --cream: #f7dba8;
+      }
+
+      * { box-sizing: border-box; }
+
+      html,
+      body {
+        min-height: 100%;
+        margin: 0;
+      }
+
+      body {
+        overflow: hidden;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 22% 18%, rgba(244, 178, 95, 0.18), transparent 31rem),
+          radial-gradient(circle at 82% 80%, rgba(237, 104, 29, 0.1), transparent 34rem),
+          var(--paper);
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC",
+          "Microsoft YaHei", sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      body::before {
+        position: fixed;
+        inset: -35vmax;
+        z-index: -1;
+        content: "";
+        background: conic-gradient(
+          from 40deg,
+          transparent 0 28%,
+          rgba(244, 178, 95, 0.1) 38%,
+          transparent 48% 72%,
+          rgba(237, 104, 29, 0.07) 82%,
+          transparent 92%
+        );
+        filter: blur(70px);
+        animation: ambient-turn 24s linear infinite;
+      }
+
+      main {
+        position: relative;
+        display: grid;
+        min-height: 100vh;
+        min-height: 100dvh;
+        place-items: center;
+        padding: clamp(1.5rem, 5vw, 4rem);
+        isolation: isolate;
+      }
+
+      .portrait {
+        display: grid;
+        width: min(100%, 46rem);
+        justify-items: center;
+        text-align: center;
+      }
+
+      .hello {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        z-index: -1;
+        margin: 0;
+        transform: translate(-50%, -61%);
+        color: transparent;
+        background: linear-gradient(
+          105deg,
+          var(--orange) 5%,
+          var(--apricot) 35%,
+          #d99055 55%,
+          var(--orange) 78%,
+          var(--cream) 96%
+        );
+        background-size: 240% 100%;
+        background-clip: text;
+        -webkit-background-clip: text;
+        font-family: "Kaiti SC", STKaiti, KaiTi, "Songti SC", serif;
+        font-size: clamp(9rem, 28vw, 22rem);
+        font-weight: 700;
+        line-height: 0.9;
+        letter-spacing: -0.16em;
+        white-space: nowrap;
+        opacity: 0.12;
+        filter: blur(0.2px);
+        animation: hello-flow 10s ease-in-out infinite alternate;
+        user-select: none;
+      }
+
+      .avatar-frame {
+        width: clamp(8.75rem, 20vw, 11.75rem);
+        aspect-ratio: 1;
+        padding: 0.42rem;
+        overflow: hidden;
+        border: 1px solid rgba(32, 31, 28, 0.08);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.72);
+        box-shadow:
+          0 1.5rem 4rem rgba(92, 54, 28, 0.12),
+          0 0.25rem 1rem rgba(92, 54, 28, 0.08),
+          inset 0 0 0 1px rgba(255, 255, 255, 0.76);
+        opacity: 0;
+        transform: translateY(0.9rem) scale(0.96);
+        animation: reveal 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 100ms forwards;
+      }
+
+      .avatar-frame img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        border-radius: inherit;
+        object-fit: cover;
+      }
+
+      h1 {
+        margin: clamp(1.4rem, 3vw, 2rem) 0 0;
+        font-size: clamp(2rem, 5vw, 3.7rem);
+        font-weight: 650;
+        line-height: 1.12;
+        letter-spacing: -0.055em;
+        opacity: 0;
+        transform: translateY(0.75rem);
+        animation: reveal 800ms cubic-bezier(0.2, 0.8, 0.2, 1) 260ms forwards;
+      }
+
+      .identities {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 1.25rem;
+        color: var(--muted);
+        font-size: clamp(0.88rem, 2vw, 1rem);
+        line-height: 1.5;
+        letter-spacing: 0.01em;
+        opacity: 0;
+        transform: translateY(0.6rem);
+        animation: reveal 800ms cubic-bezier(0.2, 0.8, 0.2, 1) 420ms forwards;
+      }
+
+      .identity {
+        display: inline-flex;
+        gap: 0.42rem;
+        align-items: baseline;
+        white-space: nowrap;
+      }
+
+      .platform {
+        color: #a19a91;
+        font-size: 0.76em;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .divider {
+        width: 1px;
+        height: 1.05rem;
+        margin: 0 1rem;
+        background: rgba(32, 31, 28, 0.16);
+      }
+
+      @keyframes reveal {
+        to { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
+      @keyframes hello-flow {
+        from { background-position: 0% 50%; transform: translate(-50%, -61%) scale(0.98); }
+        to { background-position: 100% 50%; transform: translate(-50%, -61%) scale(1.02); }
+      }
+
+      @keyframes ambient-turn {
+        to { transform: rotate(360deg); }
+      }
+
+      @media (max-width: 36rem) {
+        .hello {
+          font-size: clamp(8rem, 47vw, 13rem);
+          transform: translate(-50%, -72%);
+        }
+
+        .identities { flex-direction: column; gap: 0.38rem; }
+        .divider { display: none; }
+
+        @keyframes hello-flow {
+          from { background-position: 0% 50%; transform: translate(-50%, -72%) scale(0.98); }
+          to { background-position: 100% 50%; transform: translate(-50%, -72%) scale(1.02); }
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 1ms !important;
+          animation-iteration-count: 1 !important;
+        }
+      }
+    </style>
   </head>
   <body>
-    你好
+    <main>
+      <section class="portrait" aria-labelledby="name">
+        <p class="hello" aria-hidden="true">你好</p>
+
+        <div class="avatar-frame">
+          <img src="avatar.jpg" alt="凯门见山Kai头像" width="1254" height="1254">
+        </div>
+
+        <h1 id="name">凯门见山Kai</h1>
+
+        <div class="identities" aria-label="社交平台名称">
+          <span class="identity"><span class="platform">GitHub</span><span>kmjskai</span></span>
+          <span class="divider" aria-hidden="true"></span>
+          <span class="identity"><span class="platform">小红书</span><span>凯门见山Kai</span></span>
+        </div>
+      </section>
+    </main>
   </body>
 </html>

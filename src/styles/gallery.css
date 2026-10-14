@@ -44,3 +44,8 @@
  .mobile-gallery-controls{display:flex;justify-content:flex-end;gap:10px;width:88%;margin:9px auto 0}.mobile-gallery-controls button{background:transparent;border:1px solid #d6cfbe;color:#757767;border-radius:50%;width:42px;height:42px;cursor:pointer;font-size:17px}.mobile-gallery-controls button:active{background:#e6ddcb}.works-title{font-size:36px;margin:32px 0 17px}.works-page .gallery-heading{margin-bottom:0}
 }
 @media(prefers-reduced-motion:reduce){.hero-light i,.hero-strokes path,.home-page .hero h1 em,.gallery-row{animation:none!important}.gallery-camera,.gallery-card,.home-page .portrait-orbit,.hero-light{transition:none!important}}
+
+.hero-intro{position:relative;z-index:2}
+.hero-social{display:inline-flex;align-items:center;gap:9px;min-height:44px;margin-top:22px;padding:10px 0;border-bottom:1px solid #c8bba955;font-size:13px;color:#645e51;transition:color .16s,border-color .16s}
+.hero-social .social-platform{font-size:12px;color:#82796b}.hero-social:hover{color:#a75835;border-color:#b57a50}.hero-social:focus-visible{outline:2px solid #ce8150;outline-offset:5px}
+@media(max-width:760px){.hero-intro{display:flex;flex-direction:column;align-items:center}.hero-social{margin-top:17px;gap:8px;font-size:12px}}

@@ -22,7 +22,9 @@ writeFileSync(`${output}/global.css`,read('src/styles/global.css').replace("@imp
 cpSync('src/styles/map.css',`${output}/map.css`);
 cpSync('src/styles/gallery.css',`${output}/gallery.css`);
 writeFileSync(`${output}/portfolio.js`,stripTypeScriptTypes(read('src/scripts/portfolio.ts'),{mode:'strip'}));
+writeFileSync(`${output}/ai-map-data.js`,stripTypeScriptTypes(read('src/data/ai-map.ts'),{mode:'strip'}));
 let javascript=stripTypeScriptTypes(read('src/scripts/cosmos.ts'),{mode:'strip'});
+javascript=javascript.replace("from '../data/ai-map'","from '/ai-map-data.js'");
 javascript=javascript.replace("from 'three'","from 'https://esm.sh/three@0.180.0'").replace("from 'gsap'","from 'https://esm.sh/gsap@3.13.0'");
 writeFileSync(`${output}/cosmos.js`,javascript);
 mkdirSync(`${output}/mobile-preview`,{recursive:true});

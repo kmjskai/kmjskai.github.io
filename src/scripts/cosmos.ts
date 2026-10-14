@@ -1,50 +1,12 @@
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 
-type NodeInfo = { id: string; name: string; en: string; type: string; description: string; warm?: boolean };
-const data: NodeInfo[] = [
-  {id:'ai', name:'人工智能', en:'ARTIFICIAL INTELLIGENCE', type:'研究领域', description:'研究如何让机器完成需要智能的任务。机器学习是其中一条路线，规则、搜索与规划等方法同样属于 AI。'},
-  {id:'ml', name:'机器学习', en:'MACHINE LEARNING', type:'学习方法', description:'让模型从数据或经验中学习规律。它既包括神经网络方法，也包括决策树等其他方法。'},
-  {id:'nn', name:'神经网络', en:'NEURAL NETWORKS', type:'模型家族', description:'由相互连接的计算单元组成。神经网络可以浅，也可以深；并非所有神经网络学习都称为深度学习。'},
-  {id:'dl', name:'深度学习', en:'DEEP LEARNING', type:'学习方法', description:'通过多层表示学习复杂规律，现代实践主要围绕深层神经网络展开。“深”描述表示的多层组合。', warm:true},
-  {id:'symbolic', name:'规则与搜索', en:'RULES & SEARCH', type:'其他 AI 方法', description:'利用明确规则、逻辑推理或搜索策略解决问题，是 AI 中常用的方法。'},
-  {id:'transformer', name:'Transformer', en:'MODEL ARCHITECTURE', type:'神经网络架构', description:'一种以注意力机制为核心的神经网络架构。它可以用于语言、视觉等任务，并不是语言模型的同义词。', warm:true},
-  {id:'llm', name:'大语言模型', en:'LARGE LANGUAGE MODEL', type:'模型', description:'大规模训练的语言模型。许多 LLM 采用 Transformer 架构；“采用一种架构”与“属于某个领域”是不同关系。', warm:true},
-  {id:'agent', name:'智能体', en:'AGENT SYSTEM', type:'系统', description:'感知环境并采取行动的系统。它可以使用 LLM、工具和其他决策方法，不是 Transformer 的下一级类别。'},
-  {id:'tools', name:'工具', en:'TOOLS', type:'系统能力', description:'搜索、计算、文件操作等外部能力。由系统根据任务调用，结果再反馈给决策过程。'},
-  {id:'environment', name:'环境', en:'ENVIRONMENT', type:'行动与反馈发生的地方', description:'智能体在其中观察、行动并获得反馈。环境可以是网页、软件，也可以是物理世界。'},
-];
-const chapters = [
-  {title:'人工智能', intro:'研究如何让机器完成需要智能的任务。', relation:'机器学习、规则、搜索与规划等都是 AI 的研究方法。'},
-  {title:'机器学习', intro:'从数据或经验中学习规律，用于预测、分类或决策。', relation:'机器学习属于 AI。神经网络和决策树等是机器学习中使用的模型。'},
-  {title:'深度学习', intro:'使用多层表示学习复杂规律，现代实践主要采用深层神经网络。', relation:'神经网络可以浅，也可以深。图中展示了多层神经网络的计算连接。'},
-  {title:'Transformer 与 LLM', intro:'Transformer 是神经网络架构。LLM 是大规模训练的语言模型。', relation:'许多 LLM 采用 Transformer 架构；Transformer 也可用于视觉等任务。'},
-  {title:'智能体', intro:'感知环境、作出决策并采取行动的系统。', relation:'智能体可以使用 LLM 和工具，也可以采用规则或搜索等方法。'},
-];
+import { data, chapters, desktop, mobile, relations, stageRelations, sources } from '../data/ai-map';
+import type { Relation } from '../data/ai-map';
 
-const desktop = [
-  {ai:[-.72,.68],ml:[-.25,.68],nn:[.23,.72],dl:[.70,.45],symbolic:[-.68,-.34],transformer:[-.12,-.27],llm:[.50,-.65],agent:[-.68,-.78]},
-  {ai:[-.72,.65],ml:[-.10,.22],nn:[.66,.61],dl:[.68,-.57],symbolic:[-.66,-.62]},
-  {nn:[-.65,.60],dl:[.62,-.72]},
-  {dl:[-.70,.65],transformer:[-.28,.0],llm:[.65,-.45]},
-  {agent:[-.09,.08],llm:[-.68,.69],tools:[.68,.57],environment:[.10,-.78]},
-] as Record<string,number[]>[];
-const mobile = [
-  {ai:[-.52,.84],ml:[.51,.84],nn:[-.52,.27],dl:[.51,.27],symbolic:[-.52,-.32],transformer:[.51,-.32],agent:[-.52,-.92],llm:[.51,-.92]},
-  {ai:[-.50,.83],ml:[.40,.26],nn:[-.48,-.32],dl:[.47,-.92],symbolic:[-.50,-.92]},
-  {nn:[-.50,.72],dl:[.43,-.90]},
-  {dl:[-.50,.80],transformer:[.12,.05],llm:[.48,-.85]},
-  {agent:[-.05,.05],llm:[-.48,.80],tools:[.52,.63],environment:[.02,-.88]},
-] as Record<string,number[]>[];
-const edges = [
-  [['ai','ml',0],['ai','symbolic',0],['ml','nn',0],['nn','dl',1],['transformer','llm',1],['agent','llm',1]],
-  [['ai','ml',0],['ml','nn',0],['nn','dl',1]],
-  [],
-  [['dl','transformer',1],['transformer','llm',1]],
-  [['agent','llm',1],['agent','tools',1],['agent','environment',1]],
-];
 const mount = document.querySelector<HTMLElement>('#cosmos')!;
 const labels = document.querySelector<HTMLElement>('#labels')!;
+const edgeLabels = document.querySelector<HTMLElement>('#edge-labels')!;
 const universe = document.querySelector<HTMLElement>('.universe')!;
 const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 let reduced = reducedQuery.matches;
@@ -81,8 +43,8 @@ const nodes = data.map((info,index)=>{
   const ring=new THREE.Line(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(positions,3)),ringMaterial);
   ring.rotation.z=index%2?.4:-.3;group.add(ring);
   const button=document.createElement('button');button.className='node-label'+(info.warm?' warm':'');
-  button.setAttribute('aria-pressed','false'); button.setAttribute('aria-label',`${info.name}：${info.type}`);
-  const dot=document.createElement('span');dot.className='node-dot';const name=document.createElement('strong');name.textContent=info.name;const en=document.createElement('small');en.textContent=info.en;
+  button.dataset.concept=info.id;button.setAttribute('aria-pressed','false'); button.setAttribute('aria-label',`${info.name}：${info.type}`);
+  const dot=document.createElement('span');dot.className='node-dot';const name=document.createElement('strong');name.textContent=info.name;const en=document.createElement('small');en.textContent=info.type;
   button.append(dot,name,en);labels.appendChild(button);
   button.addEventListener('click',()=>selectNode(info.id));
   return {info,group,button,material,ringMaterial,alpha:0,targetAlpha:0};
@@ -93,27 +55,75 @@ const networkMat=new THREE.LineBasicMaterial({color:0xa7c3d1,transparent:true,op
 const neuronMat=new THREE.PointsMaterial({color:0xddc39a,size:3.2,transparent:true,opacity:0,depthWrite:false});
 let networkLines:THREE.LineSegments|null=null;
 let neuronPoints:THREE.Points|null=null;
-const edgeMaterials:(THREE.LineBasicMaterial|THREE.LineDashedMaterial)[]=[];
-
+type ActiveEdge = {relation:Relation; line:THREE.Line; arrow:THREE.LineSegments; label:HTMLSpanElement; midpoint:THREE.Vector3};
+const activeEdges:ActiveEdge[]=[];
+const nameOf=(id:string)=>data.find(node=>node.id===id)!.name;
+function showPanel(){
+  const info=data.find(node=>node.id===selected);
+  const chapter=chapters[current];
+  document.getElementById('concept-type')!.textContent=info?.type||chapter.type;
+  document.getElementById('chapter-title')!.textContent=info?.name||chapter.title;
+  document.getElementById('chapter-intro')!.textContent=info?.description||chapter.intro;
+  document.getElementById('chapter-example')!.textContent=info?.example||chapter.example;
+  const list=document.getElementById('chapter-relations')!;list.replaceChildren();
+  const related=info?relations.filter(edge=>edge.from===info.id||edge.to===info.id):chapter.summary.map(id=>relations.find(edge=>edge.id===id)!);
+  for(const edge of related){
+    const item=document.createElement('li');
+    const sentence=document.createElement('span');sentence.textContent=`${nameOf(edge.from)} → ${nameOf(edge.to)}`;
+    const kind=document.createElement('small');kind.textContent=edge.label;
+    item.append(sentence,kind);list.appendChild(item);
+  }
+  const references=document.getElementById('chapter-sources')!;references.replaceChildren();
+  for(const id of info?.sources||chapter.sources){const item=document.createElement('li');const link=document.createElement('a');link.href=sources[id].url;link.textContent=sources[id].title;link.target='_blank';link.rel='noreferrer';item.appendChild(link);references.appendChild(item);}
+  (document.getElementById('chapter-reset') as HTMLButtonElement).hidden=!info;
+  document.querySelector<HTMLElement>('.source-box')!.removeAttribute('open');
+}
 function selectNode(id:string){
   selected=selected===id?null:id;
-  const info=data.find(n=>n.id===selected);
-  const note=document.getElementById('selected-note')!;note.hidden=!info;
-  if(info){document.getElementById('selected-type')!.textContent=info.type;document.getElementById('selected-name')!.textContent=info.name;document.getElementById('selected-description')!.textContent=info.description;if(width<760)note.scrollIntoView({behavior:reduced?'instant':'smooth',block:'nearest'});}
   for(const node of nodes){node.button.classList.toggle('selected',node.info.id===selected);node.button.setAttribute('aria-pressed',String(node.info.id===selected));}
+  showPanel();
+  document.getElementById('announcer')!.textContent=selected?`${nameOf(selected)}，${data.find(node=>node.id===selected)!.type}`:`第 ${current+1} 步，${chapters[current].title}`;
+  if(width<760)document.querySelector('.reading-panel')!.scrollIntoView({behavior:reduced?'instant':'smooth',block:'start'});
 }
 function clearEdges(){
-  while(edgeGroup.children.length){const child=edgeGroup.children[0] as THREE.Line;child.geometry.dispose();(child.material as THREE.Material).dispose();edgeGroup.remove(child);}edgeMaterials.length=0;
+  for(const edge of activeEdges){for(const line of [edge.line,edge.arrow]){line.geometry.dispose();(line.material as THREE.Material).dispose();edgeGroup.remove(line);}edge.label.remove();}
+  activeEdges.length=0;
 }
 function drawEdges(){
   clearEdges();
-  for(const edge of edges[current]){
-    const [from,to,dashed]=edge as [string,string,number];
-    const a=nodes.find(n=>n.info.id===from)!,b=nodes.find(n=>n.info.id===to)!;
-    const mat=dashed?new THREE.LineDashedMaterial({color:0xc3a77d,transparent:true,opacity:.28,dashSize:.7,gapSize:.6}):new THREE.LineBasicMaterial({color:0x8aabbe,transparent:true,opacity:.24});
-    const points=[];
-    for(let j=0;j<35;j++){const t=j/34;const point=a.group.position.clone().lerp(b.group.position,t);point.z-=Math.sin(t*Math.PI)*8;points.push(point);}
-    const line=new THREE.Line(new THREE.BufferGeometry().setFromPoints(points),mat);line.computeLineDistances();edgeGroup.add(line);edgeMaterials.push(mat);
+  for(const id of stageRelations[current]){
+    const relation=relations.find(edge=>edge.id===id)!;
+    const color=relation.kind==='class'?0x8aabbe:relation.kind==='flow'?0x94b9ae:0xc3a77d;
+    const material=relation.kind==='use'?new THREE.LineDashedMaterial({color,transparent:true,opacity:.40,dashSize:.7,gapSize:.6}):new THREE.LineBasicMaterial({color,transparent:true,opacity:.34});
+    const line=new THREE.Line(new THREE.BufferGeometry().setAttribute('position',new THREE.BufferAttribute(new Float32Array(35*3),3)),material);
+    const arrow=new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position',new THREE.BufferAttribute(new Float32Array(4*3),3)),new THREE.LineBasicMaterial({color,transparent:true,opacity:.65}));
+    line.frustumCulled=false;arrow.frustumCulled=false;
+    const label=document.createElement('span');label.className=`edge-label ${relation.kind}`;label.textContent=relation.label;label.title=`${nameOf(relation.from)} → ${nameOf(relation.to)}：${relation.label}`;edgeLabels.appendChild(label);
+    edgeGroup.add(line,arrow);activeEdges.push({relation,line,arrow,label,midpoint:new THREE.Vector3()});
+  }
+  updateEdges();
+}
+function updateEdges(){
+  for(const edge of activeEdges){
+    const a=nodes.find(node=>node.info.id===edge.relation.from)!.group.position;
+    const b=nodes.find(node=>node.info.id===edge.relation.to)!.group.position;
+    const dx=b.x-a.x,dy=b.y-a.y,distance=Math.hypot(dx,dy)||1;
+    const bend=edge.relation.bend||0;
+    const pointAt=(t:number)=>new THREE.Vector3(a.x+dx*t-dy/distance*Math.sin(Math.PI*t)*bend,a.y+dy*t+dx/distance*Math.sin(Math.PI*t)*bend,-2);
+    const points=edge.line.geometry.getAttribute('position') as THREE.BufferAttribute;
+    for(let j=0;j<35;j++){const point=pointAt(.16+j/34*.68);points.setXYZ(j,point.x,point.y,point.z);}
+    points.needsUpdate=true;edge.line.computeLineDistances();
+    const tip=pointAt(.80),tangent=tip.clone().sub(pointAt(.77)).normalize();
+    const side=new THREE.Vector3(-tangent.y,tangent.x,0);
+    const left=tip.clone().addScaledVector(tangent,-1.4).addScaledVector(side,.65),right=tip.clone().addScaledVector(tangent,-1.4).addScaledVector(side,-.65);
+    const arrows=edge.arrow.geometry.getAttribute('position') as THREE.BufferAttribute;
+    [left,tip,right,tip].forEach((point,i)=>arrows.setXYZ(i,point.x,point.y,point.z));arrows.needsUpdate=true;
+    edge.midpoint.copy(pointAt(.5));edge.midpoint.y-=worldHeight*(width<760?.045:.085);edge.midpoint.project(camera);
+    edge.label.style.left=`${(edge.midpoint.x*.5+.5)*width}px`;edge.label.style.top=`${(-edge.midpoint.y*.5+.5)*height}px`;
+    const relevant=!selected||edge.relation.from===selected||edge.relation.to===selected;
+    edge.label.hidden=current===0?!selected||!relevant:!relevant;
+    (edge.line.material as THREE.Material).opacity=relevant?.42:.10;
+    (edge.arrow.material as THREE.Material).opacity=relevant?.72:.15;
   }
 }
 function positionFor(x:number,y:number){return new THREE.Vector3(x*worldWidth*.40,y*worldHeight*.29,-1);}
@@ -131,10 +141,9 @@ function buildNetwork(){
   neuronPoints=new THREE.Points(new THREE.BufferGeometry().setFromPoints(vertices.flat()),neuronMat);networkGroup.add(neuronPoints);
 }
 function changeStage(index:number, immediate=false){
-  current=Math.max(0,Math.min(4,index));selected=null;document.getElementById('selected-note')!.hidden=true;
+  current=Math.max(0,Math.min(4,index));selected=null;
   const chapter=chapters[current];
-  const pairs:Record<string,string>={'chapter-title':chapter.title,'chapter-intro':chapter.intro,'chapter-relation':chapter.relation,'chapter-counter':`${String(current+1).padStart(2,'0')} / 05`};
-  for(const [id,value] of Object.entries(pairs))document.getElementById(id)!.textContent=value;
+  document.getElementById('chapter-counter')!.textContent=`${String(current+1).padStart(2,'0')} / 05`;showPanel();
   document.getElementById('chapter-progress')!.style.width=`${(current+1)*20}%`;
   document.querySelectorAll<HTMLButtonElement>('.step').forEach((button,i)=>{button.classList.toggle('active',i===current);button.setAttribute('aria-pressed',String(i===current));});
   (document.getElementById('prev') as HTMLButtonElement).disabled=current===0;
@@ -147,7 +156,7 @@ function changeStage(index:number, immediate=false){
     node.button.classList.toggle('main-node',current===0?node.info.id==='ai':current===1?node.info.id==='ml':current===2?node.info.id==='dl':current===3?node.info.id==='transformer':node.info.id==='agent');
     if(coordinates){const p=positionFor(coordinates[0],coordinates[1]);
       if(immediate||reduced){node.group.position.copy(p);node.alpha=node.targetAlpha;}
-      else{gsap.to(node.group.position,{x:p.x,y:p.y,z:p.z,duration:.32,delay:0,ease:'power2.out',onUpdate:drawEdges});gsap.to(node,{alpha:1,duration:.18,delay:0});}
+      else{gsap.to(node.group.position,{x:p.x,y:p.y,z:p.z,duration:.32,delay:0,ease:'power2.out'});gsap.to(node,{alpha:1,duration:.18,delay:0});}
     } else if(immediate||reduced)node.alpha=0;else gsap.to(node,{alpha:0,duration:.12});
   });
   gsap.killTweensOf(networkMat);gsap.killTweensOf(neuronMat);
@@ -179,11 +188,12 @@ function render(time=0){
   // Match the node label field's vertical offset while keeping every object together.
   scene.position.y=-worldHeight*(width<760?.045:.085);
   // Scene translation affects world coordinates during rendering; labels use the same offset above.
-  renderer?.render(scene,camera);
+  updateEdges();renderer?.render(scene,camera);
 }
 document.querySelectorAll<HTMLButtonElement>('.step').forEach(button=>button.addEventListener('click',()=>changeStage(Number(button.dataset.step))));
 document.getElementById('prev')!.addEventListener('click',()=>changeStage(current-1));
 document.getElementById('next')!.addEventListener('click',()=>changeStage(current===4?0:current+1));
+document.getElementById('chapter-reset')!.addEventListener('click',()=>{if(selected)selectNode(selected);});
 document.getElementById('overview')!.addEventListener('click',()=>changeStage(0));
 document.getElementById('replay')!.addEventListener('click',()=>{
   if(reduced){changeStage(current,true);return;}

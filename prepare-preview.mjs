@@ -1,0 +1,30 @@
+import { readFileSync, writeFileSync, mkdirSync, cpSync } from 'node:fs';
+import { stripTypeScriptTypes } from 'node:module';
+const read=p=>readFileSync(p,'utf8');
+const output='local-preview';mkdirSync(output,{recursive:true});
+cpSync('public',output,{recursive:true});
+const front=s=>s.replace(/^---[\s\S]*?---\s*/, '');
+const base=front(read('src/layouts/Base.astro'));
+const gallery=front(read('src/components/Gallery.astro')).replace("<script>import '../scripts/portfolio';</script>",'<script type="module" src="/portfolio.js"></script>');
+function renderPage(input,path,title){
+  let body=front(read(input)).replace(/^<Base[^>]*>/,'').replace(/<\/Base>\s*$/,'');
+  body=body.replaceAll('<Gallery/>',gallery);
+  const stars=Array.from({length:44},(_,i)=>`<i class="star" style="left:${8+(i*37%86)}%;top:${9+(i*23%80)}%;opacity:${.25+(i%5)*.14}"></i>`).join('');
+  body=body.replace(/\{Array\.from\(\{length:44\},[\s\S]*?\/>\)\}/g,stars);
+  const html=base.replaceAll('{title}',title).replaceAll('{description}','凯门见山Kai的个人网站。').replace('<slot/>',body).replace('</head>','<link rel="stylesheet" href="/global.css"/><link rel="stylesheet" href="/gallery.css"/></head>');
+  mkdirSync(`${output}/${path}`,{recursive:true});writeFileSync(`${output}/${path}/index.html`,html);
+}
+renderPage('src/pages/index.astro','','凯门见山Kai');
+renderPage('src/pages/works/index.astro','works','作品 · 凯门见山Kai');
+mkdirSync(`${output}/ai-map`,{recursive:true});
+writeFileSync(`${output}/ai-map/index.html`,front(read('src/pages/ai-map.astro')).replace('<script>import \'../scripts/cosmos\';</script>','<script type="module" src="/cosmos.js"></script>').replace('</head>','<link rel="stylesheet" href="/map.css"/></head>'));
+writeFileSync(`${output}/global.css`,read('src/styles/global.css').replace("@import url('');",''));
+cpSync('src/styles/map.css',`${output}/map.css`);
+cpSync('src/styles/gallery.css',`${output}/gallery.css`);
+writeFileSync(`${output}/portfolio.js`,stripTypeScriptTypes(read('src/scripts/portfolio.ts'),{mode:'strip'}));
+let javascript=stripTypeScriptTypes(read('src/scripts/cosmos.ts'),{mode:'strip'});
+javascript=javascript.replace("from 'three'","from 'https://esm.sh/three@0.180.0'").replace("from 'gsap'","from 'https://esm.sh/gsap@3.13.0'");
+writeFileSync(`${output}/cosmos.js`,javascript);
+mkdirSync(`${output}/mobile-preview`,{recursive:true});
+cpSync('tools/mobile-preview.html',`${output}/mobile-preview/index.html`);
+console.log('Local static preview prepared in '+output);

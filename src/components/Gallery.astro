@@ -1,0 +1,17 @@
+---
+import '../styles/gallery.css';
+---
+<section class="gallery-section" aria-label="作品画廊">
+ <header class="gallery-heading"><h2>作品</h2><div class="gallery-actions"><button class="gallery-pause" aria-label="暂停画廊动画" aria-pressed="false">Ⅱ</button><a href="/works/">全部作品 ↗</a></div></header>
+ <div class="gallery-stage" data-gallery>
+  <div class="gallery-camera"><div class="gallery-plane" aria-hidden="true"></div></div>
+  <div class="gallery-source">
+   <a href="/ai-map/" data-title="AI 地图" data-cover="/covers/ai-map.svg"><img src="/covers/ai-map.svg" alt="AI 地图" width="780" height="500" loading="lazy"/><span>AI 地图 <i>↗</i></span></a>
+   <a href="https://github.com/kmjskai/floralmd" target="_blank" rel="noreferrer" data-title="FloralMD" data-cover="/covers/floralmd.svg"><img src="/covers/floralmd.svg" alt="FloralMD，Markdown 工作区" width="780" height="500" loading="lazy"/><span>FloralMD <i>↗</i></span></a>
+   <a href="https://github.com/kmjskai/ululawake" target="_blank" rel="noreferrer" data-title="UlulaWake" data-cover="/covers/ululawake.svg"><img src="/covers/ululawake.svg" alt="UlulaWake，Mac 合盖保持运行" width="780" height="500" loading="lazy"/><span>UlulaWake <i>↗</i></span></a>
+   <a href="https://github.com/kmjskai/wipepause" target="_blank" rel="noreferrer" data-title="WipePause" data-cover="/covers/wipepause.svg"><img src="/covers/wipepause.svg" alt="WipePause，Mac 清洁模式" width="780" height="500" loading="lazy"/><span>WipePause <i>↗</i></span></a>
+  </div>
+ </div>
+ <div class="mobile-gallery-controls"><button data-gallery-prev aria-label="上一件作品">←</button><button data-gallery-next aria-label="下一件作品">→</button></div>
+</section>
+<script>import '../scripts/portfolio';</script>

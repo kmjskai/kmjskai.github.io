@@ -1,0 +1,25 @@
+---
+import '../styles/map.css';
+---
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="theme-color" content="#080f1b"/><meta name="description" content="AI、机器学习、神经网络、深度学习、Transformer 与智能体的关系。"/><title>AI 地图 · 凯门见山Kai</title><link rel="icon" href="/avatar.jpg"/></head><body>
+<div class="map-shell">
+  <header class="map-header"><a class="map-brand" href="/">凯门见山Kai</a><a class="back-link" href="/works/">← 返回作品</a></header>
+  <main class="map-main">
+    <section class="universe" aria-label="可交互 AI 概念星图">
+      <div class="scene-heading"><h1>AI 地图</h1></div>
+      <div id="cosmos" aria-hidden="true"></div><div id="labels" class="labels"></div>
+
+      <div class="map-legend"><span><i class="legend-line"></i>属于 / 是一种</span><span><i class="legend-line dashed"></i>采用 / 使用</span><span>点击概念查看说明</span></div>
+      <div class="scene-error" id="scene-error" hidden>当前浏览器未启用 3D 图形加速，已切换为概念布局。步骤和文字仍可浏览。</div>
+    </section>
+    <aside class="reading-panel" aria-label="当前讲解">
+      <div class="panel-top"><span id="chapter-counter">01 / 05</span><span>概念说明</span></div>
+      <div class="chapter-progress"><i id="chapter-progress"></i></div>
+      <div class="chapter-copy"><h2 id="chapter-title">人工智能</h2><p class="chapter-intro" id="chapter-intro">研究如何让机器完成需要智能的任务。</p><div class="relation-box"><span>关系</span><p id="chapter-relation">机器学习、规则、搜索与规划等都是 AI 的研究方法。</p></div><div class="selected-note" id="selected-note" hidden><span id="selected-type"></span><h3 id="selected-name"></h3><p id="selected-description"></p></div></div>
+      <div class="panel-bottom"><p>← → 切换步骤</p><button class="overview-button" id="overview" title="回到全景">↖ 全景</button></div>
+    </aside>
+  </main>
+  <footer class="map-controls"><div class="step-tabs" role="group" aria-label="讲解步骤"><button class="step active" data-step="0" aria-pressed="true"><span>01</span> 全景</button><button class="step" data-step="1" aria-pressed="false"><span>02</span> 机器学习</button><button class="step" data-step="2" aria-pressed="false"><span>03</span> 深度学习</button><button class="step" data-step="3" aria-pressed="false"><span>04</span> Transformer</button><button class="step" data-step="4" aria-pressed="false"><span>05</span> 智能体</button></div><div class="play-controls"><button id="replay" class="replay" aria-label="重播当前展开动画">↺ <span>重播</span></button><button id="prev" class="prev" disabled aria-label="上一步">←</button><button id="next" class="next">下一步 <span>→</span></button></div></footer>
+</div><div id="announcer" class="sr-only" aria-live="polite"></div><noscript><p class="noscript">这张交互地图需要 JavaScript。你可以先了解：机器学习属于 AI；Transformer 是神经网络架构；Agent 是可使用模型与工具的系统。</p></noscript>
+<script>import '../scripts/cosmos';</script>
+</body></html>

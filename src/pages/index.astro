@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import Gallery from '../components/Gallery.astro';
+---
+<Base>
+ <main class="home-page"><div class="wrap">
+  <section class="hero">
+   <div class="hero-light" aria-hidden="true"><i></i><i></i><i></i></div>
+   <svg class="hero-strokes" viewBox="0 0 750 430" fill="none" aria-hidden="true"><defs><linearGradient id="stroke" x1="0" y1="0" x2="750" y2="430" gradientUnits="userSpaceOnUse"><stop stop-color="#c87540" stop-opacity="0"/><stop offset=".45" stop-color="#dc9c64" stop-opacity=".6"/><stop offset="1" stop-color="#dc9c64" stop-opacity="0"/></linearGradient></defs><path d="M-80 340C60 94 218 470 431 236S740 195 817 5" stroke="url(#stroke)" stroke-width="1.2"/><path d="M-20 95C219 42 352 410 690 292" stroke="url(#stroke)" stroke-width=".8"/></svg>
+   <h1><span class="greeting-line">你好，我是</span><em>Kai</em></h1>
+   <div class="portrait-orbit"><img src="/avatar.jpg" alt="凯门见山Kai头像" width="172" height="172"/></div>
+  </section></div>
+  <Gallery/>
+ </main>
+</Base>

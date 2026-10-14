@@ -1,0 +1,1 @@
+{"name":"kmjskai-local-preview","private":true,"type":"module","scripts":{"dev":"astro dev --host 127.0.0.1","build":"astro build","preview":"astro preview --host 127.0.0.1"},"dependencies":{"astro":"^5.0.0","three":"^0.180.0","gsap":"^3.13.0"}}

@@ -1,0 +1,9 @@
+---
+import '../styles/global.css';
+const { title = '凯门见山Kai', description = '凯门见山Kai的个人网站。' } = Astro.props;
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><meta name="description" content={description}/><meta name="theme-color" content="#f8f6f0"/><title>{title}</title><link rel="icon" href="/avatar.jpg"/></head>
+  <body><header class="site-header"><a class="brand" href="/">凯门见山Kai</a><nav aria-label="主导航"><a href="/works/">作品</a><a href="https://github.com/kmjskai" target="_blank" rel="noreferrer">GitHub ↗</a></nav></header><slot/><footer class="site-footer"><span>© 2026 凯门见山Kai</span></footer></body>
+</html>
